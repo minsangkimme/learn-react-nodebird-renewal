@@ -2,6 +2,7 @@ import {React, useState, useCallback} from 'react';
 import { Form, Input, Button } from 'antd';
 import Link from 'next/link';
 import styled from 'styled-components';
+import useInput from '../hooks/useInput';
 
 const ButtonWrapper = styled.div`
     margin-top: 10px;
@@ -12,18 +13,18 @@ const FormWrapper = styled(Form)`
 `;
 
 const LoginForm = ({setIsLoggedIn}) => {
-    const [id, setId] = useState('');
-    const [password, setPassword] = useState('');
+    const [id, onChangeId] = useInput('');
+    const [password, onChangePassword] = useInput('');
 
 
     // component에 props로 넘기는 것은 무조건 useCallback을 사용해야 함 그래야 최적화 되기 때문임
-    const onChangeId = useCallback((e) => {
-            setId(e.target.value);
-    }, []);
+    // const onChangeId = useCallback((e) => {
+    //         setId(e.target.value);
+    // }, []);
 
-    const onChangePassword = useCallback((e) => {
-        setPassword(e.target.value);
-    }, []);
+    // const onChangePassword = useCallback((e) => {
+    //     setPassword(e.target.value);
+    // }, []);
 
     const onSubmitForm = useCallback(() => {
     // antd에 Form onFinish는 e.preventDefault(); 가 이미 적용되어 있어서 따로 추가작성 할 필요 없음.

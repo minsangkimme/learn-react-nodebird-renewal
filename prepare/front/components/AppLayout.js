@@ -7,7 +7,7 @@ import LoginForm from './LoginForm';
 import styled from 'styled-components';
 
 const SearchInput = styled(Input.Search)`
-    vertical-aligin: middle;
+    vertical-align: middle;
 `;
 
 const AppLayout = ({ children }) => {
