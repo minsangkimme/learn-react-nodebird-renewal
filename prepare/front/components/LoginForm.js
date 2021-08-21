@@ -32,8 +32,6 @@ const LoginForm = ({setIsLoggedIn}) => {
     setIsLoggedIn(true);
     }, [id, password]);
 
-    
-
     return (
         <FormWrapper onFinish={onSubmitForm}>
             <div>
@@ -55,8 +53,7 @@ const LoginForm = ({setIsLoggedIn}) => {
             <ButtonWrapper>
                 <Button type="primary" htmlType="submit" loading={false}>로그인</Button>
                 <Link href="/signup"><a><Button>회원가입</Button></a></Link>
-            </ButtonWrapper>
-            <div></div>
+            </ButtonWrapper>           
         </FormWrapper>
     )
 }
