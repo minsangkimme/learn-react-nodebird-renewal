@@ -1,77 +1,27 @@
 import {HYDRATE} from 'next-redux-wrapper';
-
-const initialState = {
-    user: {
-        isLoggedIn: false,
-        user: null,
-        signUpData: {},
-        loginData: {},
-    },
-    post: {
-        mainPosts: [],
-    },
-}
+import {combineReducers } from 'redux';
+import user from './user';
+import post from './post';
 
 
-//  action
-// const chagneNickname = {
-//     type: 'CHANGE_NICKNAME',
-//     data: 'boogicho',
-// }
+//  combineReducers 리듀서 합쳐주는 역할
 
-
-// action creator
-const changeNickname = (data) => {
-    return {
-        type: 'CHANGE_NICKNAME',
-        data,
-    }
-}
-
-export const loginAction = (data) => {
-    return {
-        type: 'LOG_IN',
-        data,
-    }
-}
-
-export const logoutAction =  () => {
-    return {
-        type: 'LOG_OUT',
-    }
-}
-// changeNickname('nunu');  // nunu
-
+// redux 서버사이드랜더링을 위해서 HYDRATE 라는 것을 넣어주려면  rootReducer에 intex 키로 리듀서를 추가한다.
 
 // reducer는 이전상태 와 액션을 통해 다음상태를 만든다.
-const rootReducer = (state = initialState, action) => {
-    switch(action.type) {
-        case HYDRATE:
-            console.log('HYDRATE', action);
-            return {...state, ...action.payload};
-        case 'LOG_IN':
-            return {
-                ...state,
-                user: {
-                    ...state.user,
-                    isLoggedIn: true,
-                    user: action.data,
-                }
-            }
-
-        case 'LOG_OUT':
-            return {
-                ...state,
-                user: {
-                    ...state.user,
-                    isLoggedIn: false,
-                    user: null,
-                }
-            }
-        
-        default:
-            return state;
-    }
-}
+const rootReducer = combineReducers({
+    index: (state = {}, action) => {
+        switch(action.type) {
+            case HYDRATE:
+                console.log('HYDRATE', action);
+                return {...state, ...action.payload};
+            default:
+                return state;
+        }
+    },
+    user,
+    post,
+});
+    
 
 export default rootReducer;
