@@ -3,8 +3,8 @@ import { Form, Input, Button } from 'antd';
 import Link from 'next/link';
 import styled from 'styled-components';
 import useInput from '../hooks/useInput';
-import { loginAction } from '../reducers/user';
-import {useDispatch} from 'react-redux';
+import { loginRequestAction } from '../reducers/user';
+import {useDispatch, useSelector} from 'react-redux';
 
 const ButtonWrapper = styled.div`
     margin-top: 10px;
@@ -16,6 +16,7 @@ const FormWrapper = styled(Form)`
 
 const LoginForm = () => {
     const dispatch = useDispatch();
+    const { isLoggingIn } = useSelector((state) => state.user);
     const [id, onChangeId] = useInput('');
     const [password, onChangePassword] = useInput('');
 
@@ -32,7 +33,7 @@ const LoginForm = () => {
     const onSubmitForm = useCallback(() => {
     // antd에 Form onFinish는 e.preventDefault(); 가 이미 적용되어 있어서 따로 추가작성 할 필요 없음.
     console.log(id, password);
-    dispatch(loginAction({id, password}));
+    dispatch(loginRequestAction({id, password}));
     }, [id, password]);
 
     return (
@@ -54,7 +55,7 @@ const LoginForm = () => {
                 />
             </div>
             <ButtonWrapper>
-                <Button type="primary" htmlType="submit" loading={false}>로그인</Button>
+                <Button type="primary" htmlType="submit" loading={isLoggingIn}>로그인</Button>
                 <Link href="/signup"><a><Button>회원가입</Button></a></Link>
             </ButtonWrapper>           
         </FormWrapper>
