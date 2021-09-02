@@ -1,50 +1,54 @@
-import React, {useCallback, useState, useRef} from 'react';
-import { Form, Input, Button } from "antd";
+import React, { useEffect, useCallback, useRef } from 'react';
+import { Form, Input, Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import {addPost} from '../reducers/post';
+import { addPost } from '../reducers/post';
+import useInput from '../hooks/useInput';
 
 const PostForm = () => {
-    const {imagePaths} = useSelector((state) => state.post);
-    const dispatch = useDispatch();
-    const imageInput = useRef();
-    const [text, setText] = useState('');
-    const onChangeText = useCallback((e) => {
-        setText(e.target.value);
-    }, []);
-    const onSubmit = useCallback(() => {
-        dispatch(addPost);
-        setText('');
-    }, []);
+  const { imagePaths, addPostDone } = useSelector((state) => state.post);
+  const dispatch = useDispatch();
+  const [text, onChangeText, setText] = useInput('');
 
-    const onClickImageUpload = useCallback(() => {
-        imageInput.current.click();
-    }, [imageInput.current]);
+  useEffect(() => {
+    if (addPostDone) {
+      setText('');
+    }
+  }, [addPostDone]);
 
-    return (
-        <Form style={{margin: '10px 0 20px'}} encType="multipart/form-data" onFinish={onSubmit}>
-            <Input.TextArea 
-                value={text}
-                onChange={onChangeText}
-                maxLength={40}
-                placeholder="어떤 신기한 일이 있었나요?"
-            />
+  const onSubmit = useCallback(() => {
+    dispatch(addPost(text));
+  }, [text]);
+
+  const imageInput = useRef();
+  const onClickImageUpload = useCallback(() => {
+    imageInput.current.click();
+  }, [imageInput.current]);
+
+  return (
+    <Form style={{ margin: '10px 0 20px' }} encType="multipart/form-data" onFinish={onSubmit}>
+      <Input.TextArea
+        value={text}
+        onChange={onChangeText}
+        maxLength={40}
+        placeholder="어떤 신기한 일이 있었나요?"
+      />
+      <div>
+        <input type="file" multiple hidden ref={imageInput} />
+        <Button onClick={onClickImageUpload}>이미지 업로드</Button>
+        <Button type="primary" style={{ float: 'right' }} htmlType="submit">짹짹</Button>
+      </div>
+      <div>
+        {imagePaths.map((v) => (
+          <div key={v} style={{ display: 'inline-block' }}>
+            <img src={v} style={{ width: 200 }} alt={v} />
             <div>
-                <input type="file" multiple hidden ref={imageInput} />
-                <Button onClick={onClickImageUpload}>이미지 업로드</Button>
-                <Button type="primary" style={{ float: 'right' }} htmlType="submit">짹짹</Button>
+              <Button>제거</Button>
             </div>
-            <div>
-                {imagePaths.map((v) => (
-                    <div key={v} style={{ display: 'inline-block'}}>
-                        <img src={v} style={{ width: 200 }} alt={v} />
-                        <div>
-                            <Button>제거</Button>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </Form>
-    )
-}
+          </div>
+        ))}
+      </div>
+    </Form>
+  );
+};
 
 export default PostForm;
