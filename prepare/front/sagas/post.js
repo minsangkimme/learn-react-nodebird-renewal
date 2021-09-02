@@ -16,7 +16,7 @@ function* addPost(action) {
     //  put 은 dispatch 와 동일한 느낌
     yield put({
       type: ADD_POST_SUCCESS,
-      // data: result.data
+      data: action.data,
     });
   } catch (err) {
     yield put({
@@ -37,7 +37,7 @@ function* addComment(action) {
     //  put 은 dispatch 와 동일한 느낌
     yield put({
       type: ADD_COMMENT_SUCCESS,
-      // data: result.data
+      data: action.data,
     });
   } catch (err) {
     yield put({

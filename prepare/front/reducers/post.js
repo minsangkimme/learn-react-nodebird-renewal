@@ -5,6 +5,8 @@
 // id,content 는 게시글(post)자체의 속성이고
 //   User, Images, Comments는 다른 정보와 합쳐서 주기 때문에 얘내들은 대문자로
 
+import shortId from 'shortid';
+
 export const initialState = {
   mainPosts: [{
     id: 1,
@@ -36,6 +38,9 @@ export const initialState = {
   addPostLoading: false,
   addPostDone: false,
   addPostError: null,
+  addCommentLoading: false,
+  addCommentDone: false,
+  addCommentError: null,
 };
 
 // action 값을 상수로 빼줌 -> 재활용 가능성 높아짐
@@ -57,16 +62,25 @@ export const addComment = (data) => ({
   data,
 });
 
-const dummyPost = {
-  id: 2,
-  content: '더미 데이터 입니다.',
+const dummyPost = (data) => ({
+  id: shortId.generate(),
+  content: data,
   User: {
     id: 1,
     nickname: '제로초',
   },
   Images: [],
   Comments: [],
-};
+});
+
+const dummyComment = (data) => ({
+  id: shortId.generate(),
+  content: data,
+  User: {
+    id: 1,
+    nickname: '제로초',
+  },
+});
 
 const reducer = ((state = initialState, action) => {
   switch (action.type) {
@@ -81,7 +95,7 @@ const reducer = ((state = initialState, action) => {
     case ADD_POST_SUCCESS:
       return {
         ...state,
-        mainPosts: [dummyPost, ...state.mainPosts],
+        mainPosts: [dummyPost(action.data), ...state.mainPosts],
         addPostLoading: false,
         addPostDone: true,
       };
@@ -100,12 +114,19 @@ const reducer = ((state = initialState, action) => {
         addCommentError: null,
       };
 
-    case ADD_COMMENT_SUCCESS:
+    case ADD_COMMENT_SUCCESS: {
+      const postIndex = state.mainPosts.findIndex((v) => v.id === action.data.postId);
+      const post = { ...state.mainPosts[postIndex] };
+      post.Comments = [dummyComment(action.data.content), ...post.Comments];
+      const mainPosts = [...state.mainPosts];
+      mainPosts[postIndex] = post;
       return {
         ...state,
+        mainPosts,
         addCommentLoading: false,
         addCommentDone: true,
       };
+    }
     case ADD_COMMENT_FAILURE:
       return {
         ...state,
