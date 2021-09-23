@@ -7,6 +7,7 @@
 
 import shortId from 'shortid';
 import produce from 'immer';
+import faker from 'faker';
 
 export const initialState = {
   mainPosts: [{
@@ -53,6 +54,27 @@ export const initialState = {
   addCommentDone: false,
   addCommentError: null,
 };
+
+initialState.mainPosts = initialState.mainPosts.concat(
+  Array(20).fill().map(() => ({
+    id: shortId.generate(),
+    User: {
+      id: shortId.generate(),
+      nickname: faker.name.findName(),
+    },
+    content: faker.lorem.paragraph(),
+    Images: [{
+      src: faker.image.imageUrl(),
+    }],
+    Comments: [{
+      User: {
+        id: shortId.generate(),
+        nickname: faker.name.findName(),
+      },
+      content: faker.lorem.sentence(),
+    }],
+  })),
+);
 
 // action 값을 상수로 빼줌 -> 재활용 가능성 높아짐
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
